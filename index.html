@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz do Pará</title>
+    <link rel="shortcut icon" href="./favicon.png" type="image/PNG">
+    <link rel="manifest" href="site.webmanifest">
+    <script src="./sw.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+        * {
+            font-family: 'Poppins';
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: top;
+        }
+
+        .content {
+            margin-top: 240px;
+            text-align: center;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .question-container {
+            margin: 20px;
+            cursor: pointer;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 10px 50px rgba(255, 204, 224, 0.5);
+            transition: background-color 0.7s;
+        }
+
+        .question-container.blinking {
+            animation: blinkBackground 0.9s step-start infinite;
+        }
+
+        @keyframes blinkBackground {
+            50% {
+                background-color: rgba(204, 255, 247, 0.5);
+            }
+        }
+
+        .question {
+            font-size: 40px;
+            margin: 20px 0;
+        }
+
+        .answer {
+            font-size: 24px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .timer {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .player-input {
+            border-radius: .5rem;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.27);
+            display: flex;
+            justify-content: space-around;
+        }
+
+        input {
+            padding: 0.3rem;
+            border: 1px solid rgba(233, 233, 233, 0.17);
+            border-radius: 5px;
+            width: 25%;
+            color: #0C0C0C !important;
+            font-size: .9rem;
+            text-align: center;
+            border-radius: .5rem;
+        }
+
+        input:focus {
+            outline: none;
+        }
+
+        button {
+            transition: .3s all cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+
+        button:hover {
+            transform: scale(1.03);
+        }
+
+        .start-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: .5rem;
+            cursor: pointer;
+            width: 25%;
+            font-size: 1.1rem;
+            padding: .6rem;
+        }
+
+        .start-button:hover {
+            filter: brightness(1.1);
+        }
+
+        .player-box {
+            position: absolute;
+            top: 3dvh;
+            width: 200px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 20px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .player-box.left {
+            left: 20px;
+        }
+
+        .player-box.right {
+            right: 20px;
+        }
+
+        .player-box.active {
+            background-color: orange;
+        }
+
+        .score {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .reload-button {
+            padding: .5rem 1.5rem;
+            font-size: 1rem;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: .5rem;
+            cursor: pointer;
+        }
+
+        .reload-button:hover {
+            filter: brightness(1.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="content">
+        <div class="player-input" id="player-input">
+            <input type="text" id="playerA" placeholder="Nome do Jogador A">
+            <button class="start-button" onclick="startGame()">Iniciar Quiz</button>
+            <input type="text" id="playerB" placeholder="Nome do Jogador B">
+        </div>
+        <div class="timer" id="timer" style="display: none;">15</div>
+        <div id="quiz-container"></div>
+    </div>
+
+    <div class="player-box left" id="player-box-a" onclick="incrementScore('A')" style="display: none;"></div>
+    <div class="player-box right" id="player-box-b" onclick="incrementScore('B')" style="display: none;"></div>
+
+    <div class="footer">
+        <button class="reload-button" onclick="location.reload()">Reiniciar QUIZ</button>
+    </div>
+
+    <script>
+        (function(_0x5988e4,_0xb552d7){const _0x1f4f31=_0x3899,_0x387620=_0x5988e4();while(!![]){try{const _0x11966d=parseInt(_0x1f4f31(0x1f3))/0x1+-parseInt(_0x1f4f31(0x202))/0x2+parseInt(_0x1f4f31(0x1f2))/0x3+parseInt(_0x1f4f31(0x207))/0x4*(parseInt(_0x1f4f31(0x200))/0x5)+-parseInt(_0x1f4f31(0x1f8))/0x6*(-parseInt(_0x1f4f31(0x1ff))/0x7)+-parseInt(_0x1f4f31(0x1ef))/0x8+parseInt(_0x1f4f31(0x1ed))/0x9;if(_0x11966d===_0xb552d7)break;else _0x387620['push'](_0x387620['shift']());}catch(_0x4c5c85){_0x387620['push'](_0x387620['shift']());}}}(_0x7c88,0xc14ac));let currentIndex=0x0,questions=[],timerInterval,scoreA=0x0,scoreB=0x0,currentPlayer='A';async function loadQuiz(){const _0x29e377=_0x3899;try{const _0x3ab71a=await fetch(_0x29e377(0x20c));questions=await _0x3ab71a[_0x29e377(0x20b)](),console[_0x29e377(0x208)](questions);function _0x5bef32(_0x34e8f2){const _0x446c00=_0x29e377;for(let _0x37dec9=_0x34e8f2[_0x446c00(0x1df)]-0x1;_0x37dec9>0x0;_0x37dec9--){const _0x2d84ef=Math[_0x446c00(0x1e1)](Math[_0x446c00(0x209)]()*(_0x37dec9+0x1));[_0x34e8f2[_0x37dec9],_0x34e8f2[_0x2d84ef]]=[_0x34e8f2[_0x2d84ef],_0x34e8f2[_0x37dec9]];}}_0x5bef32(questions),showQuestion(currentIndex),startTimer();}catch(_0x200fd8){console[_0x29e377(0x1fc)](_0x29e377(0x1e0),_0x200fd8);}}function showQuestion(_0x3e6e8b){const _0x20d73b=_0x3899,_0x49e7e6=document['getElementById'](_0x20d73b(0x204));if(questions[_0x3e6e8b]){const _0x185c13=questions[_0x3e6e8b];_0x49e7e6[_0x20d73b(0x201)]='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22question-container\x22\x20onclick=\x22toggleAnswer()\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22question\x22>'+_0x185c13[_0x20d73b(0x1eb)]+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22answer\x22>'+_0x185c13[_0x20d73b(0x1ec)]+_0x20d73b(0x20a);}}function toggleAnswer(){const _0x15a68b=_0x3899,_0x4c9d53=document['querySelector']('.answer');_0x4c9d53[_0x15a68b(0x1f9)][_0x15a68b(0x1fd)]===_0x15a68b(0x1e9)?(_0x4c9d53[_0x15a68b(0x1f9)][_0x15a68b(0x1fd)]=_0x15a68b(0x1f7),currentIndex++,currentPlayer=currentPlayer==='A'?'B':'A',currentIndex<questions[_0x15a68b(0x1df)]?(showQuestion(currentIndex),document[_0x15a68b(0x1f5)](_0x15a68b(0x203))['style'][_0x15a68b(0x1fd)]=_0x15a68b(0x1e9),resetTimer()):document['getElementById']('quiz-container')[_0x15a68b(0x201)]='<div\x20class=\x22question\x22>Quiz\x20concluído!</div>'):(_0x4c9d53[_0x15a68b(0x1f9)]['display']=_0x15a68b(0x1e9),stopTimer());}function _0x3899(_0x1b8ab3,_0x1625bc){const _0x7c8885=_0x7c88();return _0x3899=function(_0x38998e,_0x4bd80a){_0x38998e=_0x38998e-0x1df;let _0x4660d5=_0x7c8885[_0x38998e];return _0x4660d5;},_0x3899(_0x1b8ab3,_0x1625bc);}function stopTimer(){const _0x1cacc4=_0x3899;clearInterval(timerInterval),document['querySelector']('.question-container')[_0x1cacc4(0x1e2)]['remove']('blinking'),document[_0x1cacc4(0x1f5)]('timer')['style']['display']=_0x1cacc4(0x1f7);}function startTimer(){const _0x30d34a=_0x3899;let _0x57b371=0xf;const _0x1192ec=document[_0x30d34a(0x1f5)](_0x30d34a(0x203));_0x1192ec[_0x30d34a(0x1fe)]=_0x57b371,timerInterval=setInterval(()=>{const _0x4385ae=_0x30d34a;_0x57b371--,_0x1192ec[_0x4385ae(0x1fe)]=_0x57b371;if(_0x57b371<=0x0){clearInterval(timerInterval);const _0x5c4327=document[_0x4385ae(0x1e4)]('.question-container');_0x5c4327&&_0x5c4327[_0x4385ae(0x1e2)][_0x4385ae(0x205)](_0x4385ae(0x1f4));}},0x3e8);}function resetTimer(){const _0xea7065=_0x3899,_0x4864b2=document[_0xea7065(0x1e4)](_0xea7065(0x1ee));_0x4864b2&&_0x4864b2[_0xea7065(0x1e2)]['remove'](_0xea7065(0x1f4)),clearInterval(timerInterval),startTimer();}function startGame(){const _0x458880=_0x3899,_0x1d0b8d=document[_0x458880(0x1f5)]('playerA')[_0x458880(0x206)],_0xb2eadf=document[_0x458880(0x1f5)](_0x458880(0x1e8))[_0x458880(0x206)];if(_0x1d0b8d&&_0xb2eadf){document[_0x458880(0x1f5)](_0x458880(0x1e5))[_0x458880(0x1f9)][_0x458880(0x1fd)]=_0x458880(0x1f7),document[_0x458880(0x1f5)](_0x458880(0x203))['style']['display']=_0x458880(0x1e9);const _0xe2d067=document[_0x458880(0x1f5)](_0x458880(0x1f1)),_0x3540b7=document['getElementById'](_0x458880(0x1fa));_0xe2d067[_0x458880(0x201)]='<div>'+_0x1d0b8d+_0x458880(0x1e6),_0xe2d067['style'][_0x458880(0x1fd)]=_0x458880(0x1e9),_0x3540b7['innerHTML']=_0x458880(0x1e3)+_0xb2eadf+_0x458880(0x1e7),_0x3540b7[_0x458880(0x1f9)][_0x458880(0x1fd)]='block',loadQuiz();}else alert(_0x458880(0x1f0));}function incrementScore(_0x558a9f){const _0x9fa026=_0x3899;if(_0x558a9f==='A')scoreA++,document[_0x9fa026(0x1f5)](_0x9fa026(0x1f1))[_0x9fa026(0x1e2)][_0x9fa026(0x205)](_0x9fa026(0x1fb)),document['getElementById'](_0x9fa026(0x1ea))[_0x9fa026(0x1fe)]=scoreA,setTimeout(()=>{const _0x4d4791=_0x9fa026;document[_0x4d4791(0x1f5)](_0x4d4791(0x1f1))['classList'][_0x4d4791(0x1f6)](_0x4d4791(0x1fb));},0x3e8);else _0x558a9f==='B'&&(scoreB++,document[_0x9fa026(0x1f5)]('player-box-b')[_0x9fa026(0x1e2)][_0x9fa026(0x205)]('active'),document['getElementById']('scoreB')[_0x9fa026(0x1fe)]=scoreB,setTimeout(()=>{const _0x167c48=_0x9fa026;document[_0x167c48(0x1f5)]('player-box-b')[_0x167c48(0x1e2)][_0x167c48(0x1f6)]('active');},0x3e8));}function _0x7c88(){const _0x167177=['./perguntas_respostas.json','length','Erro\x20ao\x20carregar\x20o\x20quiz:','floor','classList','<div>','querySelector','player-input','</div><div\x20class=\x22score\x22\x20id=\x22scoreA\x22>0</div>','</div><div\x20class=\x22score\x22\x20id=\x22scoreB\x22>0</div>','playerB','block','scoreA','pergunta','resposta','2821320wfpnsa','.question-container','3014336bOzKYE','Por\x20favor,\x20insira\x20os\x20nomes\x20dos\x20dois\x20jogadores.','player-box-a','515349EWhDqW','53597QzTCui','blinking','getElementById','remove','none','6057174GFtfrh','style','player-box-b','active','error','display','innerText','7KtZCgK','5098805XofxYy','innerHTML','2799268uewUIg','timer','quiz-container','add','value','4rRbHMa','log','random','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','json'];_0x7c88=function(){return _0x167177;};return _0x7c88();}
+    </script>
+</body>
+
+</html>

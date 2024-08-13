@@ -1,0 +1,44 @@
+{
+	"name": "Quiz do Pará",
+	"short_name": "Quiz do Pará",
+	"description": "Um jogo de perguntas e respostas.",
+	"start_url": "./index.php",
+	"display": "standalone",
+	"orientation": "portrait",
+	"lang": "pt-BR",
+    "theme_color": "white",
+    "background_color": "white",
+	"id": "./index.php",
+	"prefer_related_applications": false,
+	"icons": [
+		{
+			"src": "./icon144.png",
+			"sizes": "144x144",
+			"type": "image/png"
+		},
+		{
+			"src": "./icon192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "./icon512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	],
+	"screenshots": [
+        {
+          "src": "./screenshot.png",
+          "sizes": "1919x935",
+          "type": "image/png",
+          "form_factor": "wide"
+        }
+    ],
+	"protocol_handlers": [
+		{
+		  "protocol": "web+myprotocol",
+		  "url": "/?protocol=%s"
+		}
+	]
+}
