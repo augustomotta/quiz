@@ -2,7 +2,7 @@
 	"name": "Quiz do Pará",
 	"short_name": "Quiz do Pará",
 	"description": "Um jogo de perguntas e respostas.",
-	"start_url": "./index.php",
+	"start_url": "augustomotta.github.io/auiz",
 	"display": "standalone",
 	"orientation": "portrait",
 	"lang": "pt-BR",
